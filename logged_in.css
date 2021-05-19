@@ -52,6 +52,7 @@ body{
 #name,#pan_no,#image-upload{
     font-weight: bold;
     font-family: 'Quicksand',sans-serif;
+    margin-top: 1rem;
     
 }
 

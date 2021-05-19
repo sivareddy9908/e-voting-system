@@ -61,7 +61,7 @@ body{
     font-weight: bold;
     font-family: 'Quicksand',sans-serif;
 }
-#myimg{
+.myimg{
     border-left: 10rem;
 }
 #camera{

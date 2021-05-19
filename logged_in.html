@@ -6,7 +6,7 @@
 </head>
 <body>
 <div id="loading" style="display: none" class="loadingContainer">
-    <div class="loader" >Loading...</div>
+    <div class="loader">Loading...</div>
 </div>
 <div class="main_container">
     <form id="details">
@@ -31,15 +31,15 @@
             <label for="im" style="font-size: 120%;">Upload Voter Card </label>
         </div>
         <div id="myimge">
-            <input type="file" name="im" id="im">
-            <img src="" id="myimg" height="250" width="250">
+            <input type="file" name="im" id="im" data-for="myimg">
+            <img src="" class="myimg" id="myimg" height="250" width="250">
         </div>
         <div>
             <label for="image-upload" id="image-upload" style="font-size: 120%;">Upload Aadhar/PAN </label>
         </div>
         <div id="myimge">
-            <input type="file" class="image-upload" name="image-upload" id="pan">
-            <img src="" id="myimg" height="250" width="250">
+            <input type="file" class="image-upload" name="image-upload" id="pan" data-for="pan_img">
+            <img src="" class="myimg" id="pan_img" height="250" width="250">
         </div>
         <div id="camera"></div>
         <div id="snap_button">
@@ -89,19 +89,22 @@
         Webcam.attach('#camera');
     };
     window.addEventListener('load', function () {
-        document.querySelector('input[type = "file"]').addEventListener('change', function () {
+        document.querySelectorAll('input[type = "file"]').forEach(function (element) {
+            element.addEventListener('change', function () {
 
-            if (this.files && this.files[0]) {
-                var reader = new FileReader();
+                if (this.files && this.files[0]) {
+                    var reader = new FileReader();
 
-                reader.onload = function (e) {
-                    var img = document.getElementById("myimg");
-                    img.src = e.target.result;
-                };
+                    var elem = this;
+                    reader.onload = function (e) {
+                        var img = document.getElementById(elem.getAttribute("data-for"));
+                        img.src = e.target.result;
+                    };
 
-                reader.readAsDataURL(this.files[0]);
-            }
-        });
+                    reader.readAsDataURL(this.files[0]);
+                }
+            });
+        })
 
         document.getElementById("capture").addEventListener("click", function (e) {
             e.preventDefault();
@@ -117,10 +120,10 @@
             var auth_user = JSON.parse(localStorage.getItem("auth_user"));
             auth_user.pan = pan;
             localStorage.setItem("auth_user", JSON.stringify(auth_user));
-            var voted = JSON.parse(localStorage.getItem("voted")||"[]")
-            if(voted.indexOf(pan)=== -1){
-                window.location.href="/vote.html"
-            }else{
+            var voted = JSON.parse(localStorage.getItem("voted") || "[]")
+            if (voted.indexOf(pan) === -1) {
+                window.location.href = "/vote.html"
+            } else {
                 alert("You already casted your vote, Thank you!")
             }
 
@@ -137,11 +140,11 @@
             formData.append('source', blob, 'source.jpg')
             formData.append('target', document.getElementById("pan").files[0])
             var xhttp = new XMLHttpRequest();
-            xhttp.onreadystatechange = function() {
+            xhttp.onreadystatechange = function () {
                 if (this.readyState == 4 && this.status == 200) {
                     console.log(this.responseText)
                     loadingElem.style.display = "none";
-                    try{
+                    try {
                         var response = JSON.parse(this.responseText).response;
                         var responseTextElem = document.getElementById("response_text");
                         var source_boud = response.source_image_face.bounding_box
@@ -149,30 +152,30 @@
                         var ctx = c.getContext("2d");
                         var img = document.getElementById("source");
                         c.width = 150
-                        c.height = (source_boud.height/source_boud.width)*c.width
-                        ctx.drawImage(img, source_boud.left*img.naturalWidth, source_boud.top*img.naturalHeight,source_boud.width*img.naturalWidth, source_boud.height*img.naturalHeight,0,0,c.offsetWidth,c.offsetHeight);
+                        c.height = (source_boud.height / source_boud.width) * c.width
+                        ctx.drawImage(img, source_boud.left * img.naturalWidth, source_boud.top * img.naturalHeight, source_boud.width * img.naturalWidth, source_boud.height * img.naturalHeight, 0, 0, c.offsetWidth, c.offsetHeight);
                         var target_boud;
-                        if(response.face_matches.length>0){
+                        if (response.face_matches.length > 0) {
                             responseTextElem.innerText = "Photo Identity Matched"
                             target_boud = response.face_matches[0].face.bounding_box;
                             document.getElementById("submit").style.display = "none"
                             document.getElementById("continue").style.display = "block"
-                            localStorage.setItem("status","matched");
-                        }else{
+                            localStorage.setItem("status", "matched");
+                        } else {
                             responseTextElem.innerText = "Photo Identity Not Matched";
                             target_boud = response.unmatched_faces[0].bounding_box;
                             document.getElementById("submit").style.display = "block"
                             document.getElementById("continue").style.display = "none";
-                            localStorage.setItem("status","unmatched");
+                            localStorage.setItem("status", "unmatched");
                         }
                         var tc = document.getElementById("target_can");
                         var tctx = tc.getContext("2d");
                         var timg = document.getElementById("myimg");
                         tc.width = 150
-                        tc.height = (target_boud.height/target_boud.width)*c.width
-                        tctx.drawImage(timg, target_boud.left*timg.naturalWidth, target_boud.top*timg.naturalHeight,target_boud.width*timg.naturalWidth, target_boud.height*timg.naturalHeight,0,0,tc.offsetWidth,tc.offsetHeight);
+                        tc.height = (target_boud.height / target_boud.width) * c.width
+                        tctx.drawImage(timg, target_boud.left * timg.naturalWidth, target_boud.top * timg.naturalHeight, target_boud.width * timg.naturalWidth, target_boud.height * timg.naturalHeight, 0, 0, tc.offsetWidth, tc.offsetHeight);
 
-                    }catch (e){
+                    } catch (e) {
                         console.log(e)
                     }
                 }

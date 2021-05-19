@@ -12,23 +12,30 @@
     <form id="details">
         <h2 class="heading">Enter your Details</h2>
         <div class="input">
-            <label for="name" id="name">Enter Name As Per PAN :</label>
+            <label for="name" id="name">Enter Your Full Name :</label>
         </div>
         <br>
         <div>
-            <input type="text" class="name" name="name" autofocus placeholder="Name as per PAN" required>
+            <input type="text" class="name" name="name" autofocus placeholder="Enter Full Name" required>
         </div>
         <br><br>
         <div class="input">
-            <label for="pan_np" id="pan_no">Enter PAN Number :</label>
+            <label for="pan_np" id="pan_no">Enter Voter ID :</label>
         </div>
         <br>
         <div>
-            <input type="text" name="pan_no" class="PAN_no" autofocus placeholder="PAN Number" id="pan_np" required>
+            <input type="text" name="pan_no" class="PAN_no" autofocus placeholder="Voter ID" id="pan_np" required>
         </div>
         <br><br>
         <div>
-            <label for="image-upload" id="image-upload" style="font-size: 120%;">Upload PAN </label>
+            <label for="im" style="font-size: 120%;">Upload Voter Card </label>
+        </div>
+        <div id="myimge">
+            <input type="file" name="im" id="im">
+            <img src="" id="myimg" height="250" width="250">
+        </div>
+        <div>
+            <label for="image-upload" id="image-upload" style="font-size: 120%;">Upload Aadhar/PAN </label>
         </div>
         <div id="myimge">
             <input type="file" class="image-upload" name="image-upload" id="pan">

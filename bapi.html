@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width", intial-scale = 1.0>
+    <meta charset="utf-8">
+    <title>E-Voting Page</title>
+    <link rel="stylesheet" href="bapi.css">
+  </head>
+  <body>
+    <div class = "main_container">
+      <form class="form" id = "login">
+        <h2 class="form_title">Login</h2>
+        <div class="match-error match-error--error"></div>
+        <div class="input">
+          <!--    <label name = "Username" class="Usernamelabel">Username</label>  -->
+          <input type="text" class="Username" id = "login_email" autofocus placeholder="Username or Email">
+          <div class="error-message"></div>
+        </div>
+        <div class="input">
+          <!--    <label name = "Username" class="Usernamelabel">Username</label>  -->
+          <input type="password" class="Username password-error" id ="login_pass" autofocus placeholder="Password">
+          <div class="error-message"></div>
+        </div>
+        <button class="button" type="submit" onclick="login()" >Login</button>
+        <p class="text">
+          <a class="text-link" href="forgot">Forgot your password ?</a>
+        </p>
+        <p class="text">
+          <a class="text-link" id = "dont-have-account" href="./">Don't have an account.?Create one</a>
+        </p>
+      </form>
+      <form class="form form-hidden" id = "Create-account">
+        <h2 class="form_title">Create Account</h2>
+        <div class="match-error match-error--error"></div>
+        <div class="input">
+          <!--    <label name = "Username" class="Usernamelabel">Username</label>  -->
+          <input type="text" id = "signupUsername" class="Username" autofocus placeholder="Username" required>
+          <div class="error-message"></div>
+        </div>
+        <div class="input">
+          <!--    <label name = "Username" class="Usernamelabel">Username</label>  -->
+          <input type="text" class="Username" id="email" autofocus placeholder="Email" required>
+          <div class="error-message"></div>
+        </div>
+        <div class="input">
+          <!--    <label name = "Username" class="Usernamelabel">Username</label>  -->
+          <input type="password" class="Username password-error" id = "password" autofocus placeholder="Password" required>
+          <div class="error-message"></div>
+        </div>
+        <div class="input">
+          <!--    <label name = "Username" class="Usernamelabel">Username</label>  -->
+          <input type="password" class="Username password-error" autofocus placeholder="Confirm Password" required>
+          <div class="error-message"></div>
+        </div>
+        <button class="button" type="submit" onclick="signup()" >Signup</button>
+        <br>
+        <p class="text">
+          <a class="text-link" id = "have-account" href="./">Already have an account.? Signin</a>
+        </p>
+      </form>
+    </div>
+    <script src = "bapi.js"></script>
+  </body>
+</html>

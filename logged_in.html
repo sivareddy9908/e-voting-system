@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<head>
+    <title>signed into account</title>
+    <link rel="stylesheet" href="logged_in.css">
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/webcamjs/1.0.25/webcam.js"></script>
+</head>
+<body>
+    <div class="main_container">
+        <form action="form" id = "details">
+            <h2 class="heading" >Enter your Details</h2>
+            <div class="input">
+                <label for="name" id = "name">Enter Name As Per PAN :</label>
+            </div>
+            <br>
+            <div>
+                <input type="text" class="name" name="name" autofocus placeholder="Name as per PAN" required>
+            </div><br><br>
+            <div class="input">
+                <label for="pan_no" id = "pan_no">Enter PAN Number :</label>
+            </div><br>
+            <div>
+                <input type="text" name="pan_no" class="PAN_no" autofocus placeholder="PAN Number" required>
+            </div><br><br>
+            <div>
+                <label for="image-upload" id="image-upload" style="font-size: 120%;">Upload PAN </label>
+            </div>
+            <div id="myimg">
+                <input type="file" class="image-upload" name="image-upload">
+                <img src="" id = "myimg" height="250" width="250">
+            </div>
+            <div id ="camera" ></div>
+            <div id="snap_button">
+                <button onclick="take_snap()" >Capture</button>
+                <button onclick="retake()">Retake</button>
+            </div>
+
+        </form>
+    </div>
+</body>
+<script>
+        Webcam.set({
+        width: 250,
+        height: 250,
+        image_format: 'jpeg',
+        jpeg_quality: 100
+    });
+    Webcam.attach('#camera');
+
+    function take_snap(){
+        Webcam.snap(function (data_uri) {
+            document.getElementById('camera').innerHTML = 
+                '<img src="' + data_uri + '" width="250px" height="250px" />';
+    });
+};
+    function retake(){
+        Webcam.set({
+        width: 250,
+        height: 250,
+        image_format: 'jpeg',
+        jpeg_quality: 100
+    });
+    Webcam.attach('#camera');
+    };
+    window.addEventListener('load' , function(){
+    document.querySelector('input[type = "file"]').addEventListener('change',function(){
+
+        if(this.files && this.files[0]){
+                var img = document.getElementById("myimg");
+                img.src = URL.createObjectURL(this.files[0]);
+                img.onload= imgIsLoaded;
+            }
+        });
+    });
+</script>

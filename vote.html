@@ -5,23 +5,116 @@
         body{
             background: -webkit-linear-gradient(left, #a445b2, #fa4299);
         }
-        .selection{
-            margin: 200px 0px 0px 40%;
+        #selection{
+            margin: 20px 0px 0px 40%;
             text-align: center;
+            justify-items: center;
             justify-content: center;
-            width: auto;
+            width: 250px;
             height: 40px;
+            font-weight: bold;
+        }
+        .text{
+            font-weight: bold;
+            font-size: 200%;
+            margin-top: 190px;
+            margin-left: 40%;
+        }
+        .confirm{
+            border-radius: 0.1rem;
+            font-size: 110%;
+            margin-left: 40%;
+            margin-top: 1rem;
+        }
+        .confirm:active{
+            transform: scale(0.98);
+        }
+        #timer{
+            text-align: center;
+            color: #fff;
+            font-size: 25px;
+            font-weight: 600;
+            padding: 30px 0;
         }
     </style>
 
 </head>
 <body>
-    <select class="selection" >
-        <option value="one" >1st-party</option>
-        <option value="two" >2nd-party</option>
-        <option value="three" >3rd-party</option>
-        <option value="four" >4th-party</option>
-        <option value="five" >5th-party</option>
-        <option value="six" >6th-party</option>
+    <h2 class="text">Cast Your Vote </h2>
+    <select id="selection" >
+        <option value="one" >Party no.1</option>
+        <option value="two" >Party no.2</option>
+        <option value="three" >Party no.3</option>
+        <option value="four" >Party no.4</option>
+        <option value="five" >Party no.5</option>
+        <option value="six" >Party no.6</option>
     </select>
+
+
+<div id="voteNow">
+    <button onclick="confirm()" class="confirm">Vote Now</button>
+</div>
+    <div id="timer" style="display: none">
+        Logging out in <span id="time">5</span>
+    </div>
 </body>
+<script>
+    var status = localStorage.getItem("status");
+    if(status !== "matched"){
+        window.location.href="/logged_in.html"
+    }
+    var c1=Number(localStorage.getItem("c1")) || 0;
+    var c2=Number(localStorage.getItem("c2")) || 0;
+    var c3=Number(localStorage.getItem("c3")) || 0;
+    var c4=Number(localStorage.getItem("c4")) || 0;
+    var c5=Number(localStorage.getItem("c5")) || 0;
+    var c6=Number(localStorage.getItem("c6")) || 0;
+
+
+    function confirm(){
+        var x = document.getElementById("selection");
+        var y = x.options[x.selectedIndex];
+        if(y.value==="one"){
+            c1 = c1 + 1;
+            localStorage.setItem("c1",c1);
+        }else if(y.value==="two"){
+            c2 = c2 + 1;
+            localStorage.setItem("c2",c2);
+        }else if(y.value==="three"){
+            c3 = c3 + 1;
+            localStorage.setItem("c3",c3);
+        }else if(y.value==="four"){
+            c4 = c4 + 1;
+            localStorage.setItem("c4",c4);
+        }else if(y.value==="five"){
+            c5 = c5 + 1;
+            localStorage.setItem("c5",c5);
+        }else if(y.value==="six"){
+            c6 = c6 + 1;
+            localStorage.setItem("c6",c6);
+        }
+        var auth = JSON.parse(localStorage.getItem("auth_user"))
+        var voted = JSON.parse(localStorage.getItem("voted") || "[]")
+        voted.push(auth.pan)
+        localStorage.setItem("voted",JSON.stringify(voted))
+
+        alert("Your Vote is Casted to Party "+x.options[x.selectedIndex].value)
+        document.getElementById("voteNow").style.display = "none"
+        console.log(c1,c2,c3,c4,c5,c6);
+        var elem = document.getElementById("timer")
+        elem.style.display = "block";
+        var time = document.getElementById("time");
+        var i=5;
+        var interval = setInterval(function(){
+            i--;
+            time.innerText = i;
+        },1000)
+        setTimeout(function (){
+            elem.style.display = "none";
+            localStorage.removeItem("auth_user");
+            localStorage.removeItem("status")
+            location.replace('/')
+            clearInterval(interval);
+        }, 5000)
+    }
+</script>

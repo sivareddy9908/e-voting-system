@@ -1,16 +1,18 @@
 function signup() {
     var email = document.getElementById("email").value;
     var pass = document.getElementById("password").value;
-    
-        
-        localStorage.setItem(email,pass);
+
+        localStorage.setItem(email,pass)
+
 
 }
 function login(){
     const loginForm = document.querySelector("#login");
 
-    var x = localStorage.getItem(document.getElementById("login_email").value);
-    if(x === document.getElementById("login_pass").value){
+    var email = document.getElementById("login_email").value;
+    var pass = localStorage.getItem(email);
+    if(pass === document.getElementById("login_pass").value){
+        localStorage.setItem("auth_user", JSON.stringify({email: email,password:pass}));
         location.replace("logged_in.html");
     }
 else{

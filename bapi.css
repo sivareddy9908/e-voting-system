@@ -7,7 +7,6 @@ body{
   --border-radius : 4px;
 
   margin: 0;
-  height: 100vh;
   display: flex;
   align-items: center;  /* keep things center by vertical  */
   justify-content: center;  /* keep things center by horizontal  */

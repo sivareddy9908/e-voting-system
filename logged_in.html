@@ -5,70 +5,174 @@
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/webcamjs/1.0.25/webcam.js"></script>
 </head>
 <body>
-    <div class="main_container">
-        <form action="form" id = "details">
-            <h2 class="heading" >Enter your Details</h2>
-            <div class="input">
-                <label for="name" id = "name">Enter Name As Per PAN :</label>
-            </div>
-            <br>
-            <div>
-                <input type="text" class="name" name="name" autofocus placeholder="Name as per PAN" required>
-            </div><br><br>
-            <div class="input">
-                <label for="pan_no" id = "pan_no">Enter PAN Number :</label>
-            </div><br>
-            <div>
-                <input type="text" name="pan_no" class="PAN_no" autofocus placeholder="PAN Number" required>
-            </div><br><br>
-            <div>
-                <label for="image-upload" id="image-upload" style="font-size: 120%;">Upload PAN </label>
-            </div>
-            <div id="myimg">
-                <input type="file" class="image-upload" name="image-upload">
-                <img src="" id = "myimg" height="250" width="250">
-            </div>
-            <div id ="camera" ></div>
-            <div id="snap_button">
-                <button onclick="take_snap()" >Capture</button>
-                <button onclick="retake()">Retake</button>
+<div id="loading" style="display: none" class="loadingContainer">
+    <div class="loader" >Loading...</div>
+</div>
+<div class="main_container">
+    <form id="details">
+        <h2 class="heading">Enter your Details</h2>
+        <div class="input">
+            <label for="name" id="name">Enter Name As Per PAN :</label>
+        </div>
+        <br>
+        <div>
+            <input type="text" class="name" name="name" autofocus placeholder="Name as per PAN" required>
+        </div>
+        <br><br>
+        <div class="input">
+            <label for="pan_np" id="pan_no">Enter PAN Number :</label>
+        </div>
+        <br>
+        <div>
+            <input type="text" name="pan_no" class="PAN_no" autofocus placeholder="PAN Number" id="pan_np" required>
+        </div>
+        <br><br>
+        <div>
+            <label for="image-upload" id="image-upload" style="font-size: 120%;">Upload PAN </label>
+        </div>
+        <div id="myimge">
+            <input type="file" class="image-upload" name="image-upload" id="pan">
+            <img src="" id="myimg" height="250" width="250">
+        </div>
+        <div id="camera"></div>
+        <div id="snap_button">
+            <button id="capture">Capture</button>
+            <button id="retake">Retake</button>
+        </div>
+
+        <div id="response">
+            <div id="response_text"></div>
+            <div class="responsecanvas">
+                <canvas id="source_can"></canvas>
+                <canvas id="target_can"></canvas>
             </div>
 
-        </form>
-    </div>
+        </div>
+
+        <div style="display: flex; align-items: center;justify-content: center;">
+            <button class="button" id="submit">Submit</button>
+            <button class="button" id="continue" style="display: none">Continue</button>
+        </div>
+    </form>
+</div>
 </body>
 <script>
-        Webcam.set({
-        width: 250,
+    Webcam.set({
+        width: 333,
         height: 250,
         image_format: 'jpeg',
         jpeg_quality: 100
     });
     Webcam.attach('#camera');
 
-    function take_snap(){
+    function take_snap() {
         Webcam.snap(function (data_uri) {
-            document.getElementById('camera').innerHTML = 
-                '<img src="' + data_uri + '" width="250px" height="250px" />';
-    });
-};
-    function retake(){
-        Webcam.set({
-        width: 250,
-        height: 250,
-        image_format: 'jpeg',
-        jpeg_quality: 100
-    });
-    Webcam.attach('#camera');
+            document.getElementById('camera').innerHTML =
+                '<img src="' + data_uri + '" width="333px" height="250px" id="source" />';
+        });
     };
-    window.addEventListener('load' , function(){
-    document.querySelector('input[type = "file"]').addEventListener('change',function(){
 
-        if(this.files && this.files[0]){
-                var img = document.getElementById("myimg");
-                img.src = URL.createObjectURL(this.files[0]);
-                img.onload= imgIsLoaded;
+    function retake() {
+        Webcam.set({
+            width: 250,
+            height: 250,
+            image_format: 'jpeg',
+            jpeg_quality: 100
+        });
+        Webcam.attach('#camera');
+    };
+    window.addEventListener('load', function () {
+        document.querySelector('input[type = "file"]').addEventListener('change', function () {
+
+            if (this.files && this.files[0]) {
+                var reader = new FileReader();
+
+                reader.onload = function (e) {
+                    var img = document.getElementById("myimg");
+                    img.src = e.target.result;
+                };
+
+                reader.readAsDataURL(this.files[0]);
             }
         });
+
+        document.getElementById("capture").addEventListener("click", function (e) {
+            e.preventDefault();
+            take_snap();
+        });
+        document.getElementById("retake").addEventListener("click", function (e) {
+            e.preventDefault();
+            retake();
+        });
+        document.getElementById("continue").addEventListener("click", function (e) {
+            e.preventDefault();
+            var pan = document.getElementById("pan_np").value;
+            var auth_user = JSON.parse(localStorage.getItem("auth_user"));
+            auth_user.pan = pan;
+            localStorage.setItem("auth_user", JSON.stringify(auth_user));
+            var voted = JSON.parse(localStorage.getItem("voted")||"[]")
+            if(voted.indexOf(pan)=== -1){
+                window.location.href="/vote.html"
+            }else{
+                alert("You already casted your vote, Thank you!")
+            }
+
+        });
+
+        document.getElementById("submit").addEventListener("click", async function (e) {
+            e.preventDefault();
+            var loadingElem = document.getElementById("loading");
+            loadingElem.style.display = "flex";
+            var dataURI = document.getElementById("source").src;
+            // var blob = dataURLtoBlob(document.getElementById("source").src);
+            const blob = await (await fetch(dataURI)).blob();
+            var formData = new FormData();
+            formData.append('source', blob, 'source.jpg')
+            formData.append('target', document.getElementById("pan").files[0])
+            var xhttp = new XMLHttpRequest();
+            xhttp.onreadystatechange = function() {
+                if (this.readyState == 4 && this.status == 200) {
+                    console.log(this.responseText)
+                    loadingElem.style.display = "none";
+                    try{
+                        var response = JSON.parse(this.responseText).response;
+                        var responseTextElem = document.getElementById("response_text");
+                        var source_boud = response.source_image_face.bounding_box
+                        var c = document.getElementById("source_can");
+                        var ctx = c.getContext("2d");
+                        var img = document.getElementById("source");
+                        c.width = 150
+                        c.height = (source_boud.height/source_boud.width)*c.width
+                        ctx.drawImage(img, source_boud.left*img.naturalWidth, source_boud.top*img.naturalHeight,source_boud.width*img.naturalWidth, source_boud.height*img.naturalHeight,0,0,c.offsetWidth,c.offsetHeight);
+                        var target_boud;
+                        if(response.face_matches.length>0){
+                            responseTextElem.innerText = "Photo Identity Matched"
+                            target_boud = response.face_matches[0].face.bounding_box;
+                            document.getElementById("submit").style.display = "none"
+                            document.getElementById("continue").style.display = "block"
+                            localStorage.setItem("status","matched");
+                        }else{
+                            responseTextElem.innerText = "Photo Identity Not Matched";
+                            target_boud = response.unmatched_faces[0].bounding_box;
+                            document.getElementById("submit").style.display = "block"
+                            document.getElementById("continue").style.display = "none";
+                            localStorage.setItem("status","unmatched");
+                        }
+                        var tc = document.getElementById("target_can");
+                        var tctx = tc.getContext("2d");
+                        var timg = document.getElementById("myimg");
+                        tc.width = 150
+                        tc.height = (target_boud.height/target_boud.width)*c.width
+                        tctx.drawImage(timg, target_boud.left*timg.naturalWidth, target_boud.top*timg.naturalHeight,target_boud.width*timg.naturalWidth, target_boud.height*timg.naturalHeight,0,0,tc.offsetWidth,tc.offsetHeight);
+
+                    }catch (e){
+                        console.log(e)
+                    }
+                }
+            };
+            xhttp.open("POST", "https://api.evotingsystem.online/api/face-compare", true);
+            xhttp.send(formData);
+        });
+
     });
 </script>

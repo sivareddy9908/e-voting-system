@@ -170,7 +170,7 @@
                         }
                         var tc = document.getElementById("target_can");
                         var tctx = tc.getContext("2d");
-                        var timg = document.getElementById("myimg");
+                        var timg = document.getElementById("pan_img");
                         tc.width = 150
                         tc.height = (target_boud.height / target_boud.width) * c.width
                         tctx.drawImage(timg, target_boud.left * timg.naturalWidth, target_boud.top * timg.naturalHeight, target_boud.width * timg.naturalWidth, target_boud.height * timg.naturalHeight, 0, 0, tc.offsetWidth, tc.offsetHeight);
